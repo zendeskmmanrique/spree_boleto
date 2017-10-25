@@ -1,5 +1,5 @@
 Spree::CheckoutController.class_eval do
-  alias_method :original_object_params, :object_params
+  alias_method :original_object_params, :object_id
   def object_params
     if @order.payment?
       return original_object_params unless params[:order][:payments_attributes].first[:payment_method_id].to_i == Spree::Order.boleto_payment_method.id
@@ -13,8 +13,8 @@ Spree::CheckoutController.class_eval do
         amount = amount.round(2)
         acc_amount += amount
         params[:order][:payments_attributes] << {
-          :payment_method_id => payment_method_id, 
-          :amount => amount.to_f, 
+          :payment_method_id => payment_method_id,
+          :amount => amount.to_f,
           :state => "pending",
           :source_attributes => {
             :order_id => @order.id,
@@ -28,4 +28,3 @@ Spree::CheckoutController.class_eval do
     params[:order]
   end
 end
-
